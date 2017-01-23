@@ -13,7 +13,8 @@ const server = require('gulp-server-livereload');
 const config = {
     src: {
         js: './src/js/app.js',
-        html: './src/*.html'
+        html: './src/*.html',
+        css: './src/css/**/*.css'
     },
     dest: './dist/'
 };
@@ -43,12 +44,19 @@ gulp.task('html', () => {
         .pipe(gulp.dest(config.dest));
 });
 
+gulp.task('css', () => {
+    gulp.src(config.src.css)
+        .pipe(gulp.dest(config.dest));
+});
+
 gulp.task('webserver', () => {
     gulp.src(config.dest)
         .pipe(server({
             livereload: {
-                enable: true
+                enable: true,
+                port: 35730
             },
+            port: 8002,
             clientLog: 'error',
             open: true,
             defaultFile: 'index.html'
@@ -56,7 +64,8 @@ gulp.task('webserver', () => {
 });
 
 gulp.task('default', () => {
-   gulp.start('js', 'html', 'webserver');
+   gulp.start('js', 'html', 'css', 'webserver');
    gulp.watch('./src/**/*.js', ['js']);
    gulp.watch(config.src.html, ['html']);
+   gulp.watch(config.src.css, ['css']);
 });
